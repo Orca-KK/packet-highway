@@ -26,7 +26,7 @@ Put all the `.py` files in one folder, then open that folder in VS Code
 python -m venv .venv
 .venv\Scripts\activate
 ```
-You should see `(.venv)` at the start of your prompt.
+
 
 ### 4. Install dependencies
 ```powershell
@@ -37,21 +37,17 @@ pip install -r requirements.txt
 ```powershell
 python main.py --demo
 ```
-This uses fake, randomly generated traffic. If a highway window opens with cars
-driving across it, your install works. **Start here.**
 
 ---
 
 ## Running on REAL network traffic
-
-Capturing real packets needs two extra things on Windows:
 
 ### A. Install Npcap
 Download from **https://npcap.com** and install it. During setup, tick:
 - **"Install Npcap in WinPcap API-compatible Mode"**
 
 ### B. Run as Administrator
-Reading raw packets is privileged. Close VS Code, right-click it, choose
+Reading raw packets is privileged. choose
 **"Run as administrator"**, reopen your folder, re-activate the venv, then:
 ```powershell
 python main.py
@@ -132,53 +128,5 @@ Every frame (~60 times/second) the program:
 
 ---
 
-## Things to try (to actually sharpen your skills)
 
-These are ordered easy -> harder. Each touches a different concept.
 
-1. **Re-theme it.** Change colors and the `PROTO_STYLE` car shapes in
-   `config.py`. (Reading config-driven code.)
-2. **Add a new protocol.** Detect HTTPS specifically (TCP on port 443) in
-   `capture._classify` and give it its own car style. (Branching + mapping.)
-3. **Per-lane meaning.** Make the lane depend on protocol instead of random, so
-   each protocol gets its own lane. (Edit `Car.__init__` and `config`.)
-4. **Speed = packet size.** Make bigger packets drive slower (trucks are slow).
-   (Tweak `Car.speed`.)
-5. **Pause / resume.** Add a `P` key that freezes updates. (Event handling +
-   state.)
-6. **Top talkers panel.** Track which source IPs send the most packets and show
-   a leaderboard. (Dictionaries + sorting + a new draw function.)
-7. **Save a capture.** Write each packet dict to a CSV as it arrives, so you can
-   replay later. (File I/O + a `--record` flag.)
-8. **Replay mode.** Read that CSV back through the same queue instead of live
-   capture. (You'll see why the queue abstraction was worth it.)
-
----
-
-## Troubleshooting
-
-**The window opens but no cars appear (live mode).**
-You're probably not capturing. Check: Npcap installed? Terminal running as
-Administrator? Try `--demo` to confirm the visualizer itself works, then try a
-specific `--iface`.
-
-**`ImportError` / Scapy errors on startup.**
-`pip install -r requirements.txt` inside your activated venv. For *live*
-capture you also need Npcap (demo mode doesn't).
-
-**It's slow / laggy with lots of traffic.**
-Add a `--filter` to capture less (e.g. `"tcp"`), or lower the car cap / queue
-size in `config.py` and `capture.py`.
-
-**Permission denied when capturing.**
-Run the terminal as Administrator.
-
----
-
-## How this maps to the original
-
-The original was an AI (Claude Fable 5) writing this kind of program in one go.
-Functionally it's the same two-part system everyone building this lands on:
-a **packet sniffer** feeding a **2D animation**. The specific car shapes,
-colors, and panels here are choices you can and should change — that's where
-the learning is.
